@@ -9,12 +9,12 @@ const MyEnrollments = () => {
   const {
     studentData,
     enrolledCourses,
-    fetchUserEnrolledCourses,
     navigate,
     backendUrl,
     stoken,
     calculateCourseDuration,
     calculateTotalNumberLectures,
+    setEnrolledCourses,
   } = useContext(AppContext);
   const [progressArray, setProgressData] = useState([]);
 
@@ -45,12 +45,19 @@ const MyEnrollments = () => {
       toast.error(error.message);
     }
   };
-/*
+
   useEffect(() => {
-    if (studentData) {
-      fetchUserEnrolledCourses();
-    }
-  }, [studentData, fetchUserEnrolledCourses]);*/
+    const fetchUserEnrolledCourses = async () => {
+      const { data } = await axios.get(backendUrl + "/api/progress/enrolled", {
+        headers: { Authorization: `Bearer ${stoken}` },
+      });
+
+      if (data.success) {
+        setEnrolledCourses(data.courseDtoList.reverse());
+      } else toast.error(data.message);
+    };
+    fetchUserEnrolledCourses();
+  }, [studentData]);
 
   useEffect(() => {
     if (enrolledCourses.length > 0) {

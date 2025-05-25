@@ -83,6 +83,7 @@ const App = () => {
           <Route path="/my-enrollments" element={<MyEnrollments />} />
           <Route path="/player/:courseId" element={<Player />} />
           <Route path="/verify" element={<Verify />} />
+  
         </Route>
 
         <Route element={<ProtectedEducatorRoute />}>

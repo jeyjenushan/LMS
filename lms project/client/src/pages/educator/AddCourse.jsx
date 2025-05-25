@@ -6,16 +6,18 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { AppContext } from "../../context/AppContext";
 
+
 const AddCourse = () => {
   const quillRef = useRef(null);
   const editorRef = useRef(null);
-  const { currency, etoken, backendUrl } = useContext(AppContext);
+  const {  etoken, backendUrl } = useContext(AppContext);
   const [courseTitle, setCourseTitle] = useState("");
   const [coursePrice, setCoursePrice] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [image, setImage] = useState(null);
   const [chapters, setChapters] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentChapterId, setCurrentChapterId] = useState(null);
   const [lectureDetails, setLectureDetails] = useState({
     title: "",
@@ -87,12 +89,17 @@ const AddCourse = () => {
       isPreview: false,
     });
   };
+
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      setIsLoading(true); 
 
       if (!image) {
         toast.error("Thumbnail Not Selected");
+        setIsLoading(false);
+        return;
       }
 
       const courseData = {
@@ -121,14 +128,18 @@ const AddCourse = () => {
         setImage(null);
         setChapters([]);
         quillRef.current.root.innerHTML = "";
-      } else toast.error(data.message);
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
+      console.log(error);
       toast.error(error.message);
+    } finally {
+      setIsLoading(false); 
     }
   };
 
   useEffect(() => {
-    //Initiate Quil only once
     if (!quillRef.current && editorRef.current) {
       quillRef.current = new Quill(editorRef.current, {
         theme: "snow",
@@ -366,9 +377,16 @@ const AddCourse = () => {
         </div>
         <button
           type="submit"
+          disabled={isLoading}
           className="bg-black text-white w-max py-2.5 px-8 rounded my-4"
         >
-          ADD
+          {isLoading ? (
+            <div className="flex justify-center items-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white-900"></div>
+            </div>
+          ) : (
+            "ADD"
+          )}
         </button>
       </form>
     </div>

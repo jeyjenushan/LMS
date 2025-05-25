@@ -56,7 +56,7 @@ const ForgotPassword = () => {
       return;
     }
 
-    const success = await sendOtp(email); // Let AdminContext handle errors and notifications
+    const success = await sendOtp(email);
 
     if (success) {
       localStorage.setItem("email", email);

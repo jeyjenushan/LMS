@@ -17,7 +17,6 @@ const CourseDetails = () => {
   const [playerData, setPlayerData] = useState(null);
 
   const {
-    allCourses,
     calculateRating,
     calculateChapterTime,
     calculateCourseDuration,
@@ -62,14 +61,13 @@ const CourseDetails = () => {
 
       const { data } = await axios.post(
         `${backendUrl}/api/purchases?courseId=${courseData.id}`,
-        null, // No request body (or send additional data here if needed)
+        null,
         {
           headers: { Authorization: `Bearer ${stoken}` },
         }
       );
 
       if (data.success && data.data?.sessionUrl) {
-        // Redirect to Stripe checkout
         window.location.href = data.data.sessionUrl;
       } else {
         toast.error(data.message);
@@ -88,7 +86,12 @@ const CourseDetails = () => {
   };
   useEffect(() => {
     if (studentData && courseData) {
-      setIsAlreadyEnrolled(studentData.enrolledCourses.includes(courseData));
+      // Check if enrolledCourses contains this course's ID
+      setIsAlreadyEnrolled(
+        studentData.enrolledCourses.some(
+          (course) => course.id === courseData.id || course === courseData.id
+        )
+      );
     }
   }, [studentData, courseData]);
 

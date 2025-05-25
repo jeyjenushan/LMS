@@ -13,7 +13,6 @@ const MyCourses = () => {
       const { data } = await axios.get(backendUrl + "/api/educator/courses", {
         headers: { Authorization: `Bearer ${etoken}` },
       });
-
       if (data.success) {
         setCourses(data.courseDtoList);
       }

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import YouTube from "react-youtube";
 import { assets } from "../../assets/assets";

@@ -1,4 +1,3 @@
-import React from "react";
 import { assets } from "../../assets/assets";
 
 const CallToAction = () => {
@@ -8,9 +7,9 @@ const CallToAction = () => {
         Learn anything,anytime,anywhere
       </h1>
       <p className="text-gray-500 sm:text-sm">
-        Incididunt sint fugiat jddjjd fjfjnfkjdkfdjkfndjf fnfnfknfsknsf sdnkfnf
-        ndsndn dfjnfjnfjdfnjfn fdndfkfd dfjnf kdfnkdfndfkn jndfkfndkfdn
-        kndfdfndfkn ndn
+        Discover a wide range of courses tailored to your interests and career
+        goals. Our flexible learning platform lets you study at your own pace,
+        whenever and wherever you want. Start your learning journey today!
       </p>
       <div className="flex items-center font-medium gap-6 mt-4">
         <button className="px-10 py-3 rounded-md text-white bg-blue-600">

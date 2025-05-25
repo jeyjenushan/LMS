@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState } from "react";
-import { dummyCourses } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import humanizeDuration from "humanize-duration";
 import axios from "axios";
@@ -37,8 +36,6 @@ export const AppContextProvider = (props) => {
         return false;
       }
     } catch (error) {
-      // Log error for debugging and show error message to the user
-      console.error(error);
       toast.error(
         error.response?.data?.message ||
           "An error occurred while sending email to the user"
@@ -60,7 +57,7 @@ export const AppContextProvider = (props) => {
         toast.success(data.message);
         return true;
       } else {
-        toast.error(data.message || "Wrong OTP provided"); // Display error if doctorDtos is missing
+        toast.error(data.message || "Wrong OTP provided"); 
         return false;
       }
     } catch (error) {
@@ -87,7 +84,6 @@ export const AppContextProvider = (props) => {
       } else {
         toast.error(data.message || "Wrong OTP provided");
         return false;
-        // Display error if doctorDtos is missing
       }
     } catch (error) {
       console.error(error);
@@ -108,6 +104,7 @@ export const AppContextProvider = (props) => {
     navigate("/");
   };
 
+
   useEffect(() => {
     const loadData = async () => {
       if (stoken) {
@@ -115,7 +112,6 @@ export const AppContextProvider = (props) => {
           await loadUserProfileData();
         } catch (error) {
           console.error("Failed to load user profile:", error);
-          // If loading fails, clear invalid auth data
           if (error.response?.status === 401) {
             handleLogout();
           }
@@ -132,7 +128,6 @@ export const AppContextProvider = (props) => {
           await loadEducatorProfileData();
         } catch (error) {
           console.error("Failed to load user profile:", error);
-          // If loading fails, clear invalid auth data
           if (error.response?.status === 401) {
             handleEducatorLogout();
           }
@@ -141,6 +136,8 @@ export const AppContextProvider = (props) => {
     };
     loadData();
   }, [etoken]);
+
+
 
   // Getting User Profile using API
   const loadUserProfileData = async () => {
@@ -181,6 +178,8 @@ export const AppContextProvider = (props) => {
     }
   };
 
+
+
   //FetchAllCourses
   const fetchAllCourses = async () => {
     try {
@@ -196,6 +195,7 @@ export const AppContextProvider = (props) => {
     }
   };
 
+
   //Function to calculate average rating of course
   const calculateRating = (course) => {
     if (course.courseRatings.length == 0) {
@@ -207,6 +207,7 @@ export const AppContextProvider = (props) => {
     });
     return totalRating / course.courseRatings.length;
   };
+
 
   //Function to calculate course chapter time
   const calculateChapterTime = (chapter) => {
@@ -225,6 +226,7 @@ export const AppContextProvider = (props) => {
     return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
   };
 
+
   //Function to calculate number of lectures
   const calculateTotalNumberLectures = (course) => {
     let totalLectures = 0;
@@ -234,18 +236,6 @@ export const AppContextProvider = (props) => {
       }
     });
     return totalLectures;
-  };
-
-  //Fetch user enrolled courses
-  // Fetch User Enrolled Courses
-  const fetchUserEnrolledCourses = async () => {
-    const { data } = await axios.get(backendUrl + "/api/progress/enrolled", {
-      headers: { Authorization: `Bearer ${stoken}` },
-    });
-
-    if (data.success) {
-      setEnrolledCourses(data.courseDtoList.reverse());
-    } else toast.error(data.message);
   };
 
   const value = {
@@ -269,20 +259,18 @@ export const AppContextProvider = (props) => {
     handleEducatorLogout,
     fetchAllCourses,
     calculateChapterTime,
-
+    setEnrolledCourses,
     calculateCourseDuration,
     calculateTotalNumberLectures,
     enrolledCourses,
-    fetchUserEnrolledCourses,
   };
   useEffect(() => {
     fetchAllCourses();
-    fetchUserEnrolledCourses();
   }, []);
 
   return (
     <AppContext.Provider value={value}>
-      {props.children} {/* ✅ Correct spelling */}
+      {props.children}
     </AppContext.Provider>
   );
 };
