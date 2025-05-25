@@ -2,6 +2,7 @@ package org.ai.server.controller;
 
 
 import lombok.AllArgsConstructor;
+import org.ai.server.configuration.JwtTokenProvider;
 import org.ai.server.dto.Response;
 
 import org.ai.server.service.EducatorService;
@@ -24,7 +25,9 @@ public class EducatorController {
     @GetMapping("/students")
     public ResponseEntity<Response> getEnrolledStudents(@RequestHeader("Authorization") String authHeader) {
 
-        String email= userService.getUserDataWithToken(authHeader);
+       authHeader=authHeader.substring(7);
+        String email= JwtTokenProvider.extractUsername(authHeader);
+
 
         Response response = educatorService.getEnrolledStudentsWithPurchaseData(email);
         return  ResponseEntity.status(response.getStatusCode()).body(response);
@@ -34,7 +37,8 @@ public class EducatorController {
     @GetMapping("/dashboard")
     public ResponseEntity<Response> getEducatorDashboard(@RequestHeader("Authorization") String authHeader) {
 
-        String email= userService.getUserDataWithToken(authHeader);
+        authHeader=authHeader.substring(7);
+        String email= JwtTokenProvider.extractUsername(authHeader);
         Response response = educatorService.getDashboardData(email);
         return  ResponseEntity.status(response.getStatusCode()).body(response);
 
@@ -42,7 +46,9 @@ public class EducatorController {
 
     @GetMapping("/courses")
     public ResponseEntity<Response> getEducatorCourse( @RequestHeader("Authorization") String token){
-        String email= userService.getUserDataWithToken(token);
+
+        token=token.substring(7);
+        String email= JwtTokenProvider.extractUsername(token);
         Response response=educatorService.getEducatorCourse( email);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }

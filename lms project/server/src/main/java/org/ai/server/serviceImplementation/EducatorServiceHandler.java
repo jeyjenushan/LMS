@@ -127,7 +127,7 @@ public class EducatorServiceHandler implements EducatorService {
                    .collect(Collectors.toList());
            // Fetch completed purchases with user and course data
            List<PurchaseEntity> purchases = purchaseRepository.findByCourseIdInAndStatus(courseIds, Status.COMPLETED);
-           // Map to enrolled students data
+
            List<EnrolledStudentsDto> enrolledStudentsDtoList=purchases.stream().map(
                    purchase->{
                        EnrolledStudentsDto dto=new EnrolledStudentsDto();

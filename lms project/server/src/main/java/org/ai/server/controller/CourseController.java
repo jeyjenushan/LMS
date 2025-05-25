@@ -34,15 +34,11 @@ public class CourseController {
 
     @PostMapping("/add-course")
     public ResponseEntity<Response>addCourse(
-            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader("Authorization") String token,
             @RequestPart("courseData") String courseDataJson,
             @RequestPart("image") MultipartFile imageFile
     ){
-
-        String token = authHeader.startsWith("Bearer ") ?
-                authHeader.substring(7) :
-                authHeader;
-
+        token=token.substring(7);
         String email= JwtTokenProvider.extractUsername(token);
         Response response=courseControllerService.addCourse(courseDataJson,imageFile,email);
         response.setToken(token);

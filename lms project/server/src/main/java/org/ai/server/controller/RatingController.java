@@ -25,6 +25,7 @@ public class RatingController {
     public ResponseEntity<?> addRating(@RequestBody RatingRequest request,
                                        @RequestHeader("Authorization") String authHeader) {
 
+
             String email=userService.getUserDataWithToken(authHeader);
 
             Response response=ratingService.addRating(

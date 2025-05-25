@@ -33,7 +33,7 @@ public class RatingServiceHandler implements RatingService {
     public Response addRating(String email, Long courseId, Integer rating){
         Response response = new Response();
         try {
-            // 1. Validate inputs
+
             if (rating < 1 || rating > 5) {
                  response.setStatusCode(400);
                        response .setSuccess(false);
@@ -41,7 +41,7 @@ public class RatingServiceHandler implements RatingService {
                         return response;
             }
 
-            // 2. Extract user from token
+
 
             UserEntity user = userRepository.findByEmail(email);
 
@@ -52,11 +52,11 @@ public class RatingServiceHandler implements RatingService {
                        return response;
             }
 
-            // 3. Find course
+
             CourseEntity course = courseRepository.findById(courseId)
                     .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
-            // 4. Check enrollment
+
             if (!user.getEnrolledCourses().contains(course)) {
                  response.setStatusCode(403);
                         response.setSuccess(false);
@@ -64,7 +64,7 @@ public class RatingServiceHandler implements RatingService {
                         return response;
             }
 
-            // 5. Find or create rating
+
             CourseRatingEntity rating1 = courseRatingRepository
                     .findByUserAndCourse(user, course)
                     .orElse(new CourseRatingEntity(user, course));

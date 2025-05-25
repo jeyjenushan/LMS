@@ -45,7 +45,6 @@ public class CourseControllerServiceHandler implements CourseControllerService {
         Response response = new Response();
         try {
             List<CourseEntity> courses = courseRepository.findByIsPublished(true);
-            // Check if any courses were found
             if (courses.isEmpty()) {
                 response.setMessage("No published courses available at this time");
                 response.setStatusCode(200);
@@ -58,7 +57,6 @@ public class CourseControllerServiceHandler implements CourseControllerService {
             List<CourseDto> courseDtoList = courses.stream()
                     .map(course -> {
                         CourseDto dto = DtoConverter.convertTheCourseToCourseDto(course);
-                        // Clear unwanted fields to match Node.js select()
                         dto.getEducator().setImage(null);
                         dto.setChapters(null);
                         dto.setEnrolledStudents(null);
@@ -95,7 +93,6 @@ public class CourseControllerServiceHandler implements CourseControllerService {
                          "Course not found with ID: " + id
                  ));
 
-         // 2. Process lecture URLs based on isPreviewFree
          processLectureUrls(course);
          
          CourseDto courseDto=DtoConverter.convertTheCourseToCourseDto(course);
@@ -107,14 +104,14 @@ public class CourseControllerServiceHandler implements CourseControllerService {
 
 
      }catch (CourseOperationException e) {
-            // Known exception case
+
             response.setMessage(e.getUserMessage());
             response.setStatusCode(404); // Not Found
             response.setSuccess(false);
             response.setCourseDto(null);
 
         }catch (DataAccessException e) {
-         // Database-related errors
+
          response.setMessage("We're having trouble accessing course data. Please try again later.");
          response.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
          response.setSuccess(false);
@@ -126,9 +123,9 @@ public class CourseControllerServiceHandler implements CourseControllerService {
 
 
      catch (Exception e) {
-         // Unknown exception case
+
          response.setMessage("We couldn't load the course details. Please try again later.");
-         response.setStatusCode(500); // Internal Server Error
+         response.setStatusCode(500);
          response.setSuccess(false);
          response.setCourseDto(null);
      }
@@ -140,24 +137,20 @@ public class CourseControllerServiceHandler implements CourseControllerService {
     public Response addCourse(String courseDataJson, MultipartFile imageFile, String email) {
         Response response = new Response();
         try {
-            // 1. Validate input
+
             if (imageFile == null || imageFile.isEmpty()) {
                response.setMessage("Please provide an image file");
                return response;
             }
 
-            // 2. Parse course data
             CourseDto courseDto = objectMapper.readValue(courseDataJson, CourseDto.class);
 
 
-            // 3. Upload thumbnail to Cloudinary
             String thumbnailUrl = cloudinaryService.uploadFile(imageFile);
 
             UserEntity user = userRepository.findByEmail(email);
 
 
-
-            // 4. Create course entity
             CourseEntity course = new CourseEntity();
             course.setTitle(courseDto.getCourseTitle());
             course.setDescription(courseDto.getCourseDescription());
@@ -220,7 +213,7 @@ public class CourseControllerServiceHandler implements CourseControllerService {
 
 
 
-            // 7. Prepare response
+
             CourseDto savedCourseDto = DtoConverter.convertTheCourseToCourseDto(savedCourse);
             response.setMessage("Course successfully added with all chapters and lectures");
             response.setStatusCode(200);
@@ -241,7 +234,7 @@ public class CourseControllerServiceHandler implements CourseControllerService {
         course.getChapters().forEach(chapter -> {
             chapter.getLectures().forEach(lecture -> {
                 if (!lecture.getIsPreview()) {
-                    lecture.setVideoUrl(""); // Clear URL if not free preview
+                    lecture.setVideoUrl("");
                 }
             });
         });

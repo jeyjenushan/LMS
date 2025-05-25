@@ -1,4 +1,4 @@
-package org.ai.server.serviceImplementation;
+package org.ai.server.serviceimpl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -23,18 +23,34 @@ public class CloudinaryServiceHandler implements CloudinaryService {
         this.cloudinary = cloudinary;
     }
 
-    public String uploadFile(MultipartFile file) throws IOException {
-        File uploadedFile = convertMultipartToFile(file);
-        Map<?, ?> uploadResult = cloudinary.uploader().upload(uploadedFile, ObjectUtils.emptyMap());
-        return uploadResult.get("secure_url").toString();
+    @Override
+    public String uploadFile(MultipartFile file) {
+        try {
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(
+                    file.getBytes(),
+                    ObjectUtils.asMap(
+                            "folder", "grocery_shop",
+                            "resource_type", "auto"
+                    )
+            );
+            return (String) uploadResult.get("secure_url");
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload file to Cloudinary", e);
+        }
     }
 
-    private File convertMultipartToFile(MultipartFile file) throws IOException {
-        File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
-        FileOutputStream fos = new FileOutputStream(convFile);
-        fos.write(file.getBytes());
-        fos.close();
-        return convFile;
+    @Override
+    public void deleteFile(String publicId) {
+        try {
+            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete file from Cloudinary", e);
+        }
     }
+    @Override
+    public String getFileUrl(String publicId) {
+        return cloudinary.url().generate(publicId);
+    }
+
 }
 

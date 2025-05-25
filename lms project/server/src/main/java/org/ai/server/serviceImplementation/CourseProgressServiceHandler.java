@@ -70,7 +70,7 @@ public class CourseProgressServiceHandler implements CourseProgressService {
                 CourseProgressDto courseProgressDto = DtoConverter.convertTheCourseProgressToCourseProgressDto(progress);
                 courseProgressDto.getCompletedLectures().add(DtoConverter.convertTheLectureToLectureDto(lecture));
                 response.setCourseProgressDto(courseProgressDto);
-                return response;  // Add this return statement to exit early
+                return response;
             }
 
             // 5. Update progress
@@ -133,16 +133,10 @@ public class CourseProgressServiceHandler implements CourseProgressService {
                  return response;
             }
 
-            // 4. Get  progress record
-            // 4. Get progress record or return empty progress if none exists
+
             Optional<CourseProgressEntity> progressOpt = courseProgressRepository.findByUserAndCourse(user, course);
 
 
-
-
-
-
-            // 5. Prepare response
             CourseProgressDto dto = new CourseProgressDto();
 
             dto.setCourse(DtoConverter.convertTheCourseToCourseDto(course));
@@ -155,7 +149,7 @@ public class CourseProgressServiceHandler implements CourseProgressService {
                 dto.setCompletedCount(progress.getCompletedLectures().size());
                 dto.setId(progress.getId());
             } else {
-                // Return empty progress
+
                 dto.setCompletedLectures(new ArrayList<>());
                 dto.setCompletedCount(0);
             }

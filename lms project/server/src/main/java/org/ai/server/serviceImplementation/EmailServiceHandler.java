@@ -16,11 +16,11 @@ public class EmailServiceHandler implements EmailService {
 
     @Override
     public void sendEmail(String to, String subject, String body) throws MessagingException {
-        // Create MimeMessage for multipart email
+
         MimeMessage message = mailSender.createMimeMessage();
 
         // Create MimeMessageHelper for easy manipulation of the message
-        MimeMessageHelper helper = new MimeMessageHelper(message, true); // 'true' means multipart
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
 
         helper.setTo(to);  // Recipient's email address
@@ -29,9 +29,8 @@ public class EmailServiceHandler implements EmailService {
         helper.setSubject(subject);
 
         // Set the email body, both HTML and plain text versions
-        helper.setText(body, true); // true means HTML content
-        // If you want to add plain text as well, uncomment the line below:
-        // helper.setText("Your plain text version of the body.", false);
+        helper.setText(body, true);
+
 
         // Send the email
         mailSender.send(message);

@@ -2,6 +2,7 @@ package org.ai.server.serviceImplementation;
 
 import lombok.AllArgsConstructor;
 import org.ai.server.configuration.JwtTokenProvider;
+import org.ai.server.dto.CourseDto;
 import org.ai.server.dto.Response;
 import org.ai.server.dto.UserDto;
 import org.ai.server.mapper.DtoConverter;
@@ -11,6 +12,7 @@ import org.ai.server.repository.UserRepository;
 import org.ai.server.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -19,34 +21,40 @@ public class UserServiceImplementation implements UserService {
 
     private final UserRepository userRepository;
 
-    @Override
     public Response getUserData(String email) {
-        Response response=new Response();
-        try{
-            UserEntity user=userRepository.findByEmail(email);
-            List<CourseEntity>courseEntityList=user.getEnrolledCourses();
-            if(user==null){
+        Response response = new Response();
+        try {
+            UserEntity user = userRepository.findByEmail(email);
+            if (user == null) {
                 response.setStatusCode(404);
-                response.setMessage("User not found");
                 response.setSuccess(false);
+                response.setMessage("User not found");
                 return response;
             }
-            UserDto userDto= DtoConverter.convertTheUserToUserDto(user);
-            userDto.setEnrolledCourses(DtoConverter.convertTheCourseListToCourseDtoList(courseEntityList));
+
+            List<CourseEntity> courseEntityList = user.getEnrolledCourses();
+            UserDto userDto = DtoConverter.convertTheUserToUserDto(user);
+
+            // Convert courses - handles both null and empty list cases
+            List<CourseDto> courseDtos = courseEntityList != null
+                    ? DtoConverter.convertTheCourseListToCourseDtoList(courseEntityList)
+                    : Collections.emptyList();
+
+            userDto.setEnrolledCourses(courseDtos);
+
             response.setStatusCode(200);
             response.setSuccess(true);
             response.setMessage("User Details successfully fetched");
             response.setUserDto(userDto);
-            return response;
 
-        }catch (Exception e){
-            response.setStatusCode(200);
+        } catch (Exception e) {
+            response.setStatusCode(500);
             response.setSuccess(false);
-            response.setMessage("User Details can not be fetched please try again");
+            response.setMessage("User Details cannot be fetched. Please try again");
 
-            return response;
         }
 
+        return response;
     }
 
     @Override

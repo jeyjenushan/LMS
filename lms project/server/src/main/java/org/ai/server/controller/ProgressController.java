@@ -28,8 +28,8 @@ public class ProgressController {
     @GetMapping("/enrolled")
     public ResponseEntity<Response> getUserEnrolledCourses(@RequestHeader("Authorization") String authHeader) {
 
-
-        String email=userService.getUserDataWithToken(authHeader);
+        authHeader=authHeader.substring(7);
+        String email=JwtTokenProvider.extractUsername(authHeader);
         Response response=userService.getEnrolledCourses(email);
         return ResponseEntity.status(response.getStatusCode()).body(response);
 
@@ -39,8 +39,9 @@ public class ProgressController {
     public ResponseEntity<Response> updateCourseProgress(@RequestBody ProgressRequest request,
                                                          @RequestHeader("Authorization") String authHeader) {
 
-        String email=userService.getUserDataWithToken(authHeader);
 
+        authHeader=authHeader.substring(7);
+        String email=JwtTokenProvider.extractUsername(authHeader);
         Response response=courseProgressService.updateCourseProgress(
                email,
                 request.getLectureId()
@@ -53,8 +54,9 @@ public class ProgressController {
                                                @RequestHeader("Authorization") String authHeader) {
 
 
-        String email=userService.getUserDataWithToken(authHeader);
 
+        authHeader=authHeader.substring(7);
+        String email=JwtTokenProvider.extractUsername(authHeader);
         Response response=courseProgressService.getCourseProgress(
                 email,
           courseId

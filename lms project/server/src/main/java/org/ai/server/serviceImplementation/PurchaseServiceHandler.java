@@ -79,7 +79,7 @@ public class PurchaseServiceHandler implements PurchaseService {
                     cancelUrl
             );
 
-            // Prepare success response
+
             Map<String, Object> data = new HashMap<>();
             data.put("sessionUrl", stripeResponse.getStripeUrl());
             data.put("purchaseId", purchase.getId());
@@ -138,7 +138,6 @@ public class PurchaseServiceHandler implements PurchaseService {
                 courseRepository.save(course);
             }
            PurchaseDto purchaseDto=DtoConverter.convertThePurchaseToPurchaseDto(purchase);
-            // Prepare success response
             response.setStatusCode(200);
             response.setPurchaseDto(purchaseDto);
             response.setSuccess(true);
@@ -175,7 +174,6 @@ public class PurchaseServiceHandler implements PurchaseService {
             purchase.setStatus(Status.FAILED);
             purchaseRepository.save(purchase);
             PurchaseDto purchaseDto=DtoConverter.convertThePurchaseToPurchaseDto(purchase);
-            // Prepare success response
             response.setStatusCode(200);
             response.setPurchaseDto(purchaseDto);
             response.setSuccess(true);

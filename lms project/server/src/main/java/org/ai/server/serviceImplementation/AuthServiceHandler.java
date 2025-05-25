@@ -35,25 +35,25 @@ public class AuthServiceHandler implements AuthService {
     public Response LoginUser(LoginRequest loginRequest) {
         Response response = new Response();
         try {
-            // Authenticate the user
+
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(), loginRequest.getPassword()
                     )
             );
 
-            // Fetch user details
+
             UserEntity userEntity = userRepository.findByEmail(loginRequest.getEmail());
 
-            // Generate JWT token
-            String token = jwtTokenProvider.generateToken(userEntity);
-            Date expirationDate = jwtTokenProvider.extractExpiration(token);
 
-            // Convert UserEntity to UserDto
+            String token = jwtTokenProvider.generateToken(userEntity);
+            Date expirationDate = JwtTokenProvider.extractExpiration(token);
+
+
             UserDto userDto = DtoConverter.convertTheUserToUserDto(userEntity);
 
 
-            // Set the response attributes
+
             response.setStatusCode(200);
             response.setToken(token);
             response.setExpirationTime(String.valueOf(expirationDate));
@@ -80,7 +80,7 @@ public class AuthServiceHandler implements AuthService {
                  response.setMessage("Email already in use.");
                  return response;
             }
-            // 1. Validate input
+
             if (imageFile == null || imageFile.isEmpty()) {
                 response.setMessage("Please provide an image file");
                 return response;
@@ -93,7 +93,7 @@ public class AuthServiceHandler implements AuthService {
             else{
                 user.setRole(ROLE.STUDENT);
             }
-            // 3. Upload thumbnail to Cloudinary
+
             String thumbnailUrl = cloudinaryService.uploadFile(imageFile);
 
             user.setImage(thumbnailUrl);
